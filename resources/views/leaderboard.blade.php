@@ -16,7 +16,8 @@
 </head>
 <body class="antialiased">
 <div
-    class="min-h-screen bg-cyan-700 text-white flex-col items-center space-y-10 justify-center flex p-5">
+    style="background: {{ $client->brand_color }}"
+    class="min-h-screen bg-cyan-700 flex-col items-center space-y-10 justify-center flex p-5">
     <img src="{{ $client->logo_file_url }}" alt="{{ $client->name }}" class="h-40">
     <ul class="space-y-8">
         @foreach($client->leaders()->orderBy('sort')->get() as $leader)
@@ -31,6 +32,47 @@
             </li>
         @endforeach
     </ul>
+    <p class="italic text-sm">
+        Last Updated: {{ Carbon\Carbon::parse($client->updated_at)->format('M d Y') }}
+    </p>
 </div>
+
+<script>
+    (function () {
+        if (isDarkModeColor('{{ $client->brand_color }}')) {
+            document.body.classList.add('text-white');
+        } else {
+            document.body.classList.add('text-black');
+        }
+    })();
+
+    function isDarkModeColor(colorCode) {
+        let red, green, blue;
+
+        // Check if the color code is in the #RRGGBB format
+        if (colorCode.startsWith("#") && colorCode.length === 7) {
+            red = parseInt(colorCode.substr(1, 2), 16);
+            green = parseInt(colorCode.substr(3, 2), 16);
+            blue = parseInt(colorCode.substr(5, 2), 16);
+        }
+        // Check if the color code is in the rgb(r, g, b) format
+        else if (/^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/.test(colorCode)) {
+            const rgbArray = colorCode.match(/\d+/g);
+            red = parseInt(rgbArray[0]);
+            green = parseInt(rgbArray[1]);
+            blue = parseInt(rgbArray[2]);
+        }
+        // Invalid color code format
+        else {
+            throw new Error("Invalid color code format");
+        }
+
+        // Calculate the relative luminance of the color using the sRGB color space
+        const luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+
+        // Determine if the color is "dark" based on its luminance value
+        return luminance < 128;
+    }
+</script>
 </body>
 </html>

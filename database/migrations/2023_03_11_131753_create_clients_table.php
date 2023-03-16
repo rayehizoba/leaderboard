@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('logo_file_path');
+            $table->string('brand_color')->nullable();
             $table->timestamps();
         });
     }

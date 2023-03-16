@@ -7,12 +7,14 @@ use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
@@ -66,6 +68,14 @@ class ClientResource extends Resource
                             ->schema([
                                 Forms\Components\Card::make()
                                     ->schema([
+                                        ColorPicker::make('brand_color')
+                                            ->rgb()
+                                            ->required(),
+                                    ])
+                                    ->columnSpan(1),
+
+                                Forms\Components\Card::make()
+                                    ->schema([
                                         Forms\Components\Placeholder::make('Created at')
                                             ->content(function (?Client $record) {
                                                 return isset($record)
@@ -106,6 +116,10 @@ class ClientResource extends Resource
                     ->iconPosition('after'),
                 TextColumn::make('updated_at')
                     ->since(),
+                ColorColumn::make('brand_color')
+                    ->label('Color')
+                    ->copyable()
+                    ->copyMessage('Color code copied'),
             ])
             ->filters([
                 //
