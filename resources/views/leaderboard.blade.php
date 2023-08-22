@@ -7,42 +7,106 @@
     <title>{{ $client->name }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
 
     <!-- Styles -->
     <link rel=stylesheet href="https://cdn.jsdelivr.net/npm/@mdi/font@6.1.95/css/materialdesignicons.min.css"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
 <body class="antialiased">
 <div
     style="background: {{ $client->brand_color }}"
-    class="min-h-screen bg-cyan-700 flex-col items-center space-y-10 justify-center flex p-5">
-    <img src="{{ $client->logo_file_url }}" alt="{{ $client->name }}" class="h-40">
-    <ul class="space-y-8">
-        @foreach($client->leaders()->orderBy('sort')->get() as $leader)
-            <li class="flex space-x-2">
-                <figure class="relative">
-                    <i class="mdi mdi-trophy-variant text-7xl @if($loop->iteration === 1) text-amber-400 @endif @if($loop->iteration === 2) text-slate-400 @endif @if($loop->iteration === 3) text-yellow-700 @endif @if($loop->iteration > 3) text-black opacity-10 @endif"></i>
-                    <div class="absolute top-1/2 transform -translate-y-1/2 left-1/2 -translate-x-1/2 -mt-3 font-bold text-2xl @if($loop->iteration > 3) opacity-10 @else opacity-90 @endif">
+    class="min-h-screen bg-cyan-700 flex-col items-center space-y-5 flex p-5 text-black/75 dark:text-white/75">
+
+    {{-- Brand Logo --}}
+    <header class="flex items-center space-x-3 mb-5">
+        <img src="{{ $client->logo_file_url }}" alt="{{ $client->name }}" class="h-7">
+        <h1 class="text-xl font-semibold">Leaderboard</h1>
+    </header>
+
+    {{-- Leaders --}}
+    <ul class="flex items-center max-w-md w-full {{ count($leaders) >= 3 ? 'justify-between' : 'justify-evenly' }}">
+        @php
+            $defaultTrophy = 'json/silver.json';
+            $trophies = [
+                'json/gold.json',
+                'json/silver.json',
+                'json/bronze.json',
+            ];
+        @endphp
+
+        {{-- Top 3 Leaders --}}
+        @foreach($leaders as $leader)
+            @if ($loop->index < 3)
+                @php
+                    $orderClass = [
+                        'order-2',
+                        'order-first',
+                        'order-last'
+                    ];
+                @endphp
+                <li class="flex flex-col items-center @if(count($leaders) >= 3){{ $orderClass[$loop->index] }}@endif">
+                    <div class="text-2xl font-bold text-center">
                         {{ $loop->iteration }}
                     </div>
-                </figure>
-                <p class="text-lg uppercase mt-2 @if($loop->iteration > 3) opacity-25 @endif">{{ $leader->name }}</p>
-            </li>
+                    <x-trophy
+                        class="{{ $loop->index === 0 ? 'w-36' : '' }}"
+                        id="trophy-{{ $loop->index }}"
+                        path="{{ asset($trophies[$loop->index] ?? $defaultTrophy) }}"
+                        :loop="$loop->first"
+                        autoplay
+                    />
+                    <div class="text-lg font-semibold text-center w-24 leading-tight mt-1">
+                        {{ $leaders[$loop->index]->name }}
+                    </div>
+                </li>
+            @else
+                @break
+            @endif
         @endforeach
     </ul>
-    <p class="italic text-sm">
-        Last Updated: {{ Carbon\Carbon::parse($client->updated_at)->format('M d Y') }}
-    </p>
+
+    {{-- Others --}}
+    <ul class="space-y-2 font-medium max-w-xs w-full">
+        @foreach($leaders as $leader)
+            @if ($loop->index >= 3)
+                <li class="flex items-center space-x-5">
+                    <div class="text-xl opacity-75">
+                        {{ $loop->iteration }}
+                    </div>
+                    <div class="rounded-xl bg-black/5 dark:bg-white/5 p-5 py-3 w-full">
+                        {{ $leader->name }}
+                    </div>
+                </li>
+            @endif
+        @endforeach
+    </ul>
+
+    {{-- Footer --}}
+    <footer>
+        <p class="text-xs font-medium">
+            Last Updated: {{ Carbon\Carbon::parse($client->updated_at)->format('M d Y') }}
+        </p>
+    </footer>
 </div>
 
+@stack('scripts')
 <script>
     (function () {
         if (isDarkModeColor('{{ $client->brand_color }}')) {
-            document.body.classList.add('text-white');
+            document.body.classList.add('dark');
         } else {
-            document.body.classList.add('text-black');
+            document.body.classList.add('light');
         }
     })();
 

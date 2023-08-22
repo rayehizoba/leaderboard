@@ -70,6 +70,7 @@ class ClientResource extends Resource
                                     ->schema([
                                         ColorPicker::make('brand_color')
                                             ->rgb()
+                                            ->default('rgb(255, 255, 255)')
                                             ->required(),
                                     ])
                                     ->columnSpan(1),
@@ -101,25 +102,27 @@ class ClientResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('logo_file_path')
-                    ->label('Logo'),
                 TextColumn::make('name')
+                    ->label('Client')
                     ->weight('bold')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->label('Leaderboard')
                     ->sortable()
                     ->formatStateUsing(fn(string $state): string => route('clients.show', $state))
                     ->url(fn(Client $record): string => route('clients.show', $record->slug))
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-external-link')
                     ->iconPosition('after'),
-                TextColumn::make('updated_at')
-                    ->since(),
+                ImageColumn::make('logo_file_path')
+                    ->label('Logo'),
                 ColorColumn::make('brand_color')
                     ->label('Color')
                     ->copyable()
                     ->copyMessage('Color code copied'),
+                TextColumn::make('updated_at')
+                    ->since(),
             ])
             ->filters([
                 //

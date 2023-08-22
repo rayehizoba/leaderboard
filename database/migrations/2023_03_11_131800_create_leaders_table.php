@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('sort')->default(0);
-            $table->foreignId('client_id')->constrained();
+            $table->foreignId('client_id')
+                ->references('id')
+                ->on('clients')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
