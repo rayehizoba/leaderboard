@@ -66,7 +66,7 @@
                         :loop="$loop->first"
                         autoplay
                     />
-                    <div class="text-lg font-semibold text-center w-24 leading-tight mt-1">
+                    <div class="{{ $loop->index === 0 ? 'text-2xl' : 'text-lg' }} font-semibold text-center w-24 leading-tight mt-1">
                         {{ $leaders[$loop->index]->name }}
                     </div>
                 </li>
