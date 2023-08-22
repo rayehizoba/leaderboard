@@ -106,7 +106,8 @@ class ClientResource extends Resource
                     ->label('Client')
                     ->weight('bold')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(35),
                 TextColumn::make('slug')
                     ->label('Leaderboard')
                     ->sortable()
@@ -114,7 +115,8 @@ class ClientResource extends Resource
                     ->url(fn(Client $record): string => route('clients.show', $record->slug))
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-external-link')
-                    ->iconPosition('after'),
+                    ->iconPosition('after')
+                    ->limit(35),
                 ImageColumn::make('logo_file_path')
                     ->label('Logo'),
                 ColorColumn::make('brand_color')

@@ -30,7 +30,7 @@
 
     {{-- Brand Logo --}}
     <header class="flex items-center space-x-3 mb-5">
-        <img src="{{ $client->logo_file_url }}" alt="{{ $client->name }}" class="h-7">
+        <img src="{{ $client->logo_file_url }}" alt="{{ $client->name }}" class="h-16">
         <h1 class="text-xl font-semibold">Leaderboard</h1>
     </header>
 
