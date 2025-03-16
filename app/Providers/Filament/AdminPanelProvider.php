@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->topNavigation()
             ->brandName(
-                setting('general.brand_name', config('app.name'))
+                setting('general.brand_name') ?? config('app.name')
             )
             ->plugins([
                 FilamentShieldPlugin::make(),
